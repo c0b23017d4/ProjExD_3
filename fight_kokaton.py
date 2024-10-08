@@ -84,7 +84,7 @@ class Bird:
         screen.blit(self.img, self.rct)
 
 
-class beam :
+class Beam :
     """
     こうかとんが放つビームに関するクラス
     """
@@ -145,6 +145,7 @@ def main():
     screen = pg.display.set_mode((WIDTH, HEIGHT))    
     bg_img = pg.image.load("fig/pg_bg.jpg")
     bird = Bird((300, 200))
+    beam = None
     bomb = Bomb((255, 0, 0), 10)
     clock = pg.time.Clock()
     tmr = 0
@@ -157,12 +158,18 @@ def main():
                  beam = Beam(bird)            
         screen.blit(bg_img, [0, 0])
         
-        if bird.rct.colliderect(bomb.rct):
-            # ゲームオーバー時に，こうかとん画像を切り替え，1秒間表示させる
-            bird.change_img(8, screen)
-            pg.display.update()
-            time.sleep(1)
-            return
+        if bomb is not None :
+            if bird.rct.colliderect(bomb.rct):
+                # ゲームオーバー時に，こうかとん画像を切り替え，1秒間表示させる
+                bird.change_img(8, screen)
+                pg.display.update()
+                time.sleep(1)
+                return
+        
+        if beam is not None : 
+            if bomb is not None :
+                if beam.rct.colliderect(bomb.rct):
+                    bomb, bomb = None , None
 
         key_lst = pg.key.get_pressed()
         bird.update(key_lst, screen)
